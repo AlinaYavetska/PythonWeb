@@ -1,0 +1,8 @@
+services:
+  landing:
+    container_name: site_service
+    build:
+      context: ../services/site
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
