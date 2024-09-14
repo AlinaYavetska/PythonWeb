@@ -1,8 +1,47 @@
 services:
-  landing:
-    container_name: site_service
-    build:
-      context: ../services/site
-      dockerfile: Dockerfile
+  postgres:
+    image: postgres:14-alpine
+    container_name: dai_postgres
+    env_file:
+      - ../services/gateway/.env.sample
     ports:
-      - 8000:8000
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - dai_network
+
+  gateway:
+    build:
+      context: ../services/gateway
+      dockerfile: Dockerfile
+    container_name: dai_gateway
+    ports:
+      - "8000:8000"
+    environment:
+      AUTH_SERVICE_HOST: auth
+      AUTH_SERVICE_PORT: "8000"
+    networks:
+      - dai_network
+
+  auth:
+    build:
+      context: ../services/auth
+      dockerfile: Dockerfile
+    container_name: dai_auth_service
+    ports:
+      - "8001:8000"
+    env_file:
+      - ../services/gateway/.env.sample
+    environment:
+      GATEWAY_HOST: gateway
+      POSTGRES_HOST: postgres
+    networks:
+      - dai_network
+
+volumes:
+  pgdata:
+
+networks:
+  dai_network:
+    driver: bridge
