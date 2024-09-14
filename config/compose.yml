@@ -3,24 +3,11 @@ services:
     image: postgres:14-alpine
     container_name: dai_postgres
     env_file:
-      - ../services/gateway/.env.sample
+      - ../services/auth/.env
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    networks:
-      - dai_network
-
-  gateway:
-    build:
-      context: ../services/gateway
-      dockerfile: Dockerfile
-    container_name: dai_gateway
-    ports:
-      - "8000:8000"
-    environment:
-      AUTH_SERVICE_HOST: auth
-      AUTH_SERVICE_PORT: "8000"
     networks:
       - dai_network
 
@@ -32,9 +19,8 @@ services:
     ports:
       - "8001:8000"
     env_file:
-      - ../services/gateway/.env.sample
+      - ../services/auth/.env
     environment:
-      GATEWAY_HOST: gateway
       POSTGRES_HOST: postgres
     networks:
       - dai_network

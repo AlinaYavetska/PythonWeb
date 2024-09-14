@@ -3,10 +3,10 @@ from jose import jwt
 from fastapi import Depends, HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from services.auth.src.common import constants
+from src.common import constants
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services.auth.src.common import database
+from src.common import database
 from src.models.users import User, UserRepository
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
