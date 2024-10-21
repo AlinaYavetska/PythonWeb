@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>VideoVault - Picks</title>
+    <link rel="stylesheet" href="/static/mvp_styles.css"/>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/logout">Logout</a></li>
+            <li><a href="/home" class="cart-button">Home</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section id="orders">
+        <h2>Your Picks</h2>
+        {% if borrow_items %}
+        <ol class="orders-list">
+            {% for item in borrow_items %}
+            <li>
+                <p>{{item.product.title}}</p>
+                <form action="/cart/remove" method="post">
+                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                    <button type="submit" style="color: white">Remove</button>
+                </form>
+            </li>
+            <hr/>
+            {% endfor %}
+        </ol>
+        <form action="/cart/checkout" method="post">
+            <button type="submit">Confirm</button>
+        </form>
+        {% else %}
+        <p>Your pick list is empty!</p>
+        {% endif %}
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2024 VideoVault. All rights reserved.</p>
+</footer>
+</body>
+</html>

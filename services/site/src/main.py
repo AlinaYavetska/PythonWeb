@@ -1,14 +1,23 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+from starlette.middleware.sessions import SessionMiddleware
 
-app = FastAPI()
+from src.common.database import create_tables_postgres
+from src.modules.mvc.router import router as mvc_router
+from src.modules.api.router import router as api_router
 
-templates = Jinja2Templates(directory="templates")
+
+@asynccontextmanager
+async def lifespan(app):
+    await create_tables_postgres()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-@app.get("/", response_class=HTMLResponse)
-async def get_home_page(request: Request):
-    return templates.TemplateResponse(request=request, name="index.html")
+app.include_router(mvc_router)
+app.include_router(api_router)

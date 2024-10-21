@@ -1,8 +1,35 @@
 services:
-  landing:
-    container_name: site_service
+  api:
+    container_name: python_api
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      POSTGRES_HOST: postgres
+    env_file:
+      - .env
     ports:
       - 8000:8000
+    depends_on:
+      - postgres
+    networks:
+      - shared_network
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: postgres_site
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - shared_network
+
+networks:
+  shared_network:
+    driver: bridge
+
+volumes:
+  pgdata:

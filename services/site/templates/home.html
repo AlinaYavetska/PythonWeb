@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>VideoVault - Home</title>
+    <link rel="stylesheet" href="/static/mvp_styles.css"/>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/logout">Logout</a></li>
+            <li>
+                <a href="/cart" class="cart-button">
+                    Picks
+                    <span class="cart-counter">{{ borrow_item_count }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <h1>Welcome to VideoVault!</h1>
+</header>
+
+<main>
+    <div class="main-content">
+        <section id="products">
+            <h2>Available Tapes</h2>
+            <ul class="products-list">
+                {% for product in products %}
+                <li>
+                    <p>{{ product.title }}</p>
+                    <form action="/add-to-cart" method="post">
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <button type="submit">Rent</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section id="orders">
+            <h2>Rental History</h2>
+            {% if borrow_cards %}
+            <ul class="orders-list">
+                {% for order in borrow_cards %}
+                <li>
+                    <h5>Order №{{ order.id }}</h5>
+                    <p>Borrowed: {{ order.borrowed_date }} </p>
+                    <p>Due: {{ order.due_date }} </p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Your rental history is empty. Start renting today!</p>
+            {% endif %}
+        </section>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2024 VideoVault. All rights reserved.</p>
+</footer>
+</body>
+</html>
